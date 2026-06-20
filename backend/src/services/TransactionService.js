@@ -2,6 +2,7 @@ const { db } = require('../db/db')
 
 async function transfer(fromAccountId, toAccountId, amount, note, userId, idempotencyKey) {
 
+   const startTime = Date.now()
   const transferAmount = parseFloat(amount)
 
   if (transferAmount <= 0) {
@@ -38,6 +39,8 @@ async function transfer(fromAccountId, toAccountId, amount, note, userId, idempo
 
   const result = await db.transaction(async function(trx) {
 
+    const lockStart = Date.now() 
+
     const lockedAccounts = await trx.raw(`
       SELECT * FROM accounts
       WHERE id IN (?, ?)
@@ -45,6 +48,7 @@ async function transfer(fromAccountId, toAccountId, amount, note, userId, idempo
       FOR UPDATE
     `, [fromAccountId, toAccountId])
 
+    console.log('Lock acquired in:', Date.now() - lockStart, 'ms')
     const rows = lockedAccounts.rows
 
     const fromAccount = rows.find(function(row) {
@@ -252,7 +256,7 @@ async function deposit(accountId, amount, note, userId, idempotencyKey) {
     }
 
   })
-
+ console.log('Total transfer time:', Date.now() - startTime, 'ms') 
   return result
 }
 

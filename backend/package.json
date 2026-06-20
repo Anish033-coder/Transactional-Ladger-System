@@ -4,11 +4,13 @@
   "description": "Lader-System-Backend",
   "main": "index.js",
   "scripts": {
-    "start":     "node src/index.js",
-    "dev":       "nodemon src/index.js",
-    "migrate":   "knex migrate:latest",
-    "loadtest":  "node loadtest.js"
-  },
+  "test": "NODE_ENV=test jest --runInBand --forceExit",
+  "test:debug": "NODE_ENV=test jest --runInBand --detectOpenHandles",
+  "start": "node src/index.js",
+  "dev": "nodemon src/index.js",
+  "migrate": "NODE_ENV=test knex migrate:latest",
+  "loadtest": "node loadtest.js"
+},
   "keywords": [
     "JS"
   ],
@@ -27,6 +29,8 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
-    "nodemon": "^3.1.14"
+    "jest": "^30.4.2",
+    "nodemon": "^3.1.14",
+    "supertest": "^7.2.2"
   }
 }
